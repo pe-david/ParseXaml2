@@ -16,12 +16,15 @@ namespace ParseXaml2
     {
         static void Main(string[] args)
         {
-            // test xaml file is in the Bin folder
-            using (var fs = File.Open(@"..\SelectSubsystemHardware.xaml", FileMode.Open, FileAccess.Read))
-            {
-                //var doc = new XmlDocument();
-                //doc.Load(fs);
+            var path = @"..\SelectSubsystemHardware.xaml";
 
+            ParseXaml(path);
+        }
+
+        private static void ParseXaml(string path)
+        {
+            using (var fs = File.Open(path, FileMode.Open, FileAccess.Read))
+            {
                 var settings = new XmlReaderSettings();
                 using (var reader = XmlReader.Create(fs, settings))
                 {
@@ -35,13 +38,12 @@ namespace ParseXaml2
                                 {
                                     if (reader.MoveToAttribute("Name"))
                                     {
-                                        Console.WriteLine($"Element name: {element}");
-                                        Console.WriteLine($"Attribute name: {reader.Value}");
-                                        if (reader.MoveToAttribute("AutomationProperties.AutomationId"))
-                                            Console.WriteLine($"AutomationId: {reader.Value}");
-                                        else
+                                        var attribute = $"Attribute name: {reader.Value}";
+                                        if (!reader.MoveToAttribute("AutomationProperties.AutomationId"))
                                         {
-                                            Console.WriteLine("No AutomationId");
+                                            Console.WriteLine(element);
+                                            Console.WriteLine(attribute);
+                                            Console.WriteLine("No Automation Id");
                                         }
 
                                         Console.WriteLine();
