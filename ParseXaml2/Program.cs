@@ -16,10 +16,10 @@ namespace ParseXaml2
     {
         static void Main(string[] args)
         {
-            var path = @"..\SelectSubsystemHardware.xaml";
-
+            //var path = @"C:\Users\rosed18169\source\repos\Tests\ParseXaml2\ParseXaml2\bin";
+            var path = @"C:\Users\rosed18169\source\repos\LivingImage";
             var checker = new AutomationIdChecker(path, Console.WriteLine);
-            checker.ParseXaml(path);
+            checker.StartSearch();
         }
     }
 }

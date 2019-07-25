@@ -19,7 +19,7 @@ namespace ParseXaml2
             _output = output;
         }
 
-        public void ParseXaml(string path)
+        private void ParseXaml(string path)
         {
             using (var fs = File.Open(path, FileMode.Open, FileAccess.Read))
             {
@@ -51,6 +51,30 @@ namespace ParseXaml2
                         }
                     }
                 }
+            }
+        }
+
+        public void StartSearch()
+        {
+            var di = new DirectoryInfo(_startingPath);
+            foreach (var file in di.GetFiles("*.xaml"))
+            {
+                ParseXaml(file.FullName);
+            }
+
+            RecurseFolders(di);
+        }
+
+        private void RecurseFolders(DirectoryInfo directoryInfo)
+        {
+            foreach (var directory in directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
+            {
+                foreach (var file in directory.GetFiles("*.xaml"))
+                {
+                    ParseXaml(file.FullName);
+                }
+
+                RecurseFolders(directory);
             }
         }
     }
