@@ -18,8 +18,16 @@ namespace ParseXaml2
         {
             //var path = @"C:\Users\rosed18169\source\repos\Tests\ParseXaml2\ParseXaml2\bin";
             var path = @"C:\Users\rosed18169\source\repos\LivingImage";
-            var checker = new AutomationIdChecker(path, Console.WriteLine);
-            checker.StartSearch();
+            var outputPath = @".\Output.txt";
+
+            using (var writer = new FileWriter(outputPath))
+            {
+                var checker = new AutomationIdChecker(path, writer.WriteLine);
+                checker.StartSearch();
+            }
+
+            Console.WriteLine("Done!");
+            Console.ReadKey();
         }
     }
 }

@@ -19,6 +19,12 @@ namespace ParseXaml2
             _output = output;
         }
 
+        public AutomationIdChecker(string startingPath, Action<string> output, string[] filterStrings)
+        {
+            _startingPath = startingPath;
+            _output = output;
+        }
+
         private void ParseXaml(string path)
         {
             using (var fs = File.Open(path, FileMode.Open, FileAccess.Read))
@@ -26,6 +32,7 @@ namespace ParseXaml2
                 var settings = new XmlReaderSettings();
                 using (var reader = XmlReader.Create(fs, settings))
                 {
+                    _output($"File: {path}{Environment.NewLine}");
                     while (reader.Read())
                     {
                         switch (reader.NodeType)
@@ -50,6 +57,8 @@ namespace ParseXaml2
                                 break;
                         }
                     }
+
+                    _output($"End: {path}{Environment.NewLine}");
                 }
             }
         }
