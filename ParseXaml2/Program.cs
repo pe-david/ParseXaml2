@@ -16,23 +16,25 @@ namespace ParseXaml2
     {
         static void Main(string[] args)
         {
+            string targetDirectory;
             if (args.Length == 0)
             {
-                Console.WriteLine("No target directory on the command line.");
-                Console.WriteLine("Hit any key to exit...");
-                Console.ReadKey();
-                return;
+                Console.WriteLine("Enter the path to the target directory:");
+                targetDirectory = Console.ReadLine();
             }
-
-            if (!Directory.Exists(args[0]))
+            else
             {
-                Console.WriteLine($"Target directory \"{args[0]}\" does not exist.");
+                targetDirectory = args[0];
+            }
+
+            if (!Directory.Exists(targetDirectory))
+            {
+                Console.WriteLine($"Target directory \"{targetDirectory}\" does not exist.");
                 Console.WriteLine("Hit any key to exit...");
                 Console.ReadKey();
                 return;
             }
 
-            var path = args[0];
             var outputPath = @".\Output.txt";
             var filterStrings = new string[]
             {
@@ -53,7 +55,7 @@ namespace ParseXaml2
 
             using (var writer = new FileWriter(outputPath))
             {
-                var checker = new AutomationIdChecker(path, writer.WriteLine, filterStrings);
+                var checker = new AutomationIdChecker(targetDirectory, writer.WriteLine, filterStrings);
                 checker.StartSearch();
             }
 
