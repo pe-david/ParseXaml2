@@ -16,13 +16,28 @@ namespace ParseXaml2
     {
         static void Main(string[] args)
         {
-            //var path = @"C:\Users\rosed18169\source\repos\Tests\ParseXaml2\ParseXaml2\bin";
-            var path = @"C:\Users\rosed18169\source\repos\LivingImage";
+            var path = args[0];
             var outputPath = @".\Output.txt";
+            var filterStrings = new string[]
+            {
+                "TextBlock",
+                "Grid",
+                "StackPanel",
+                "DockPanel",
+                "Ellipse",
+                "Rectangle",
+                "Canvas",
+                "Label",
+                "ColumnDefinition",
+                "RowDefinition",
+                "Border",
+                "Polyline",
+                "Window"
+            };
 
             using (var writer = new FileWriter(outputPath))
             {
-                var checker = new AutomationIdChecker(path, writer.WriteLine);
+                var checker = new AutomationIdChecker(path, writer.WriteLine, filterStrings);
                 checker.StartSearch();
             }
 

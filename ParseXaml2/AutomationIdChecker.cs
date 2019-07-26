@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -12,6 +13,7 @@ namespace ParseXaml2
     {
         private string _startingPath;
         private Action<string> _output;
+        private string[] _filterStrings;
 
         public AutomationIdChecker(string startingPath, Action<string> output)
         {
@@ -20,9 +22,9 @@ namespace ParseXaml2
         }
 
         public AutomationIdChecker(string startingPath, Action<string> output, string[] filterStrings)
+                : this(startingPath, output)
         {
-            _startingPath = startingPath;
-            _output = output;
+            _filterStrings = filterStrings;
         }
 
         private void ParseXaml(string path)
@@ -38,6 +40,7 @@ namespace ParseXaml2
                         switch (reader.NodeType)
                         {
                             case XmlNodeType.Element:
+                                if (_filterStrings != null &&_filterStrings.Any(s => s == reader.Name)) continue;
                                 var element = $"Start Element {reader.Name}";
                                 if (reader.HasAttributes)
                                 {
