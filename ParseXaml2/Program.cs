@@ -16,6 +16,22 @@ namespace ParseXaml2
     {
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("No target directory on the command line.");
+                Console.WriteLine("Hit any key to exit...");
+                Console.ReadKey();
+                return;
+            }
+
+            if (!Directory.Exists(args[0]))
+            {
+                Console.WriteLine($"Target directory \"{args[0]}\" does not exist.");
+                Console.WriteLine("Hit any key to exit...");
+                Console.ReadKey();
+                return;
+            }
+
             var path = args[0];
             var outputPath = @".\Output.txt";
             var filterStrings = new string[]
@@ -42,6 +58,7 @@ namespace ParseXaml2
             }
 
             Console.WriteLine("Done!");
+            Console.WriteLine("Hit any key to exit...");
             Console.ReadKey();
         }
     }
