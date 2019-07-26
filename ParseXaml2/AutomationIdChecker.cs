@@ -27,8 +27,9 @@ namespace ParseXaml2
             _filterStrings = filterStrings;
         }
 
-        private void ParseXaml(string path)
+        private int ParseXaml(string path)
         {
+            var found = 0;
             using (var fs = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 var settings = new XmlReaderSettings();
@@ -41,7 +42,7 @@ namespace ParseXaml2
                         {
                             case XmlNodeType.Element:
                                 if (_filterStrings != null &&_filterStrings.Any(s => s == reader.Name)) continue;
-                                var element = $"Start Element {reader.Name}";
+                                var element = $"Element {reader.Name}";
                                 if (reader.HasAttributes)
                                 {
                                     if (reader.MoveToAttribute("Name"))
@@ -49,6 +50,7 @@ namespace ParseXaml2
                                         var attribute = $"Attribute name: {reader.Value}";
                                         if (!reader.MoveToAttribute("AutomationProperties.AutomationId"))
                                         {
+                                            found++;
                                             _output(element);
                                             _output(attribute);
                                             _output("No Automation Id");
@@ -64,30 +66,37 @@ namespace ParseXaml2
                     _output($"End: {path}{Environment.NewLine}");
                 }
             }
+
+            return found;
         }
 
-        public void StartSearch()
+        public int StartSearch()
         {
+            var found = 0;
             var di = new DirectoryInfo(_startingPath);
             foreach (var file in di.GetFiles("*.xaml"))
             {
-                ParseXaml(file.FullName);
+                found = ParseXaml(file.FullName);
             }
 
-            RecurseFolders(di);
+            found += RecurseFolders(di);
+            return found;
         }
 
-        private void RecurseFolders(DirectoryInfo directoryInfo)
+        private int RecurseFolders(DirectoryInfo directoryInfo)
         {
+            var found = 0;
             foreach (var directory in directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly))
             {
                 foreach (var file in directory.GetFiles("*.xaml"))
                 {
-                    ParseXaml(file.FullName);
+                    found += ParseXaml(file.FullName);
                 }
 
-                RecurseFolders(directory);
+                found += RecurseFolders(directory);
             }
+
+            return found;
         }
     }
 }

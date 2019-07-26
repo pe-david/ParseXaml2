@@ -53,13 +53,15 @@ namespace ParseXaml2
                 "Window"
             };
 
+            int found;
             using (var writer = new FileWriter(outputPath))
             {
                 var checker = new AutomationIdChecker(targetDirectory, writer.WriteLine, filterStrings);
-                checker.StartSearch();
+                found = checker.StartSearch();
             }
 
-            Console.WriteLine("Done!");
+            Console.WriteLine($"Done!{Environment.NewLine}");
+            Console.WriteLine($"Missing AutomationIds found: {found}{Environment.NewLine}");
             Console.WriteLine("Hit any key to exit...");
             Console.ReadKey();
         }
