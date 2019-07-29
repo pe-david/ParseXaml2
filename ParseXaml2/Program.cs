@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Markup;
-using System.Xml;
 
 namespace ParseXaml2
 {
     class Program
     {
+        private enum Output
+        {
+            Console,
+            File
+        }
+
         static void Main(string[] args)
         {
             string targetDirectory;
+            Output output = Output.Console;
+
             if (args.Length == 0)
             {
                 Console.WriteLine("Enter the path to the target directory:");
@@ -30,9 +29,14 @@ namespace ParseXaml2
             if (!Directory.Exists(targetDirectory))
             {
                 Console.WriteLine($"Target directory \"{targetDirectory}\" does not exist.");
-                Console.WriteLine("Hit any key to exit...");
-                Console.ReadKey();
+                //Console.WriteLine("Hit any key to exit...");
+                //Console.ReadKey();
                 return;
+            }
+
+            if (args.Length == 2)
+            {
+                output = args[1].ToLower() == "file" ? Output.File : Output.Console;
             }
 
             var outputPath = @".\Output.txt";
@@ -54,10 +58,18 @@ namespace ParseXaml2
             };
 
             int found;
-            using (var writer = new FileWriter(outputPath))
+            if (output == Output.Console)
             {
-                var checker = new AutomationIdChecker(targetDirectory, writer.WriteLine, filterStrings);
+                var checker = new AutomationIdChecker(targetDirectory, Console.WriteLine, filterStrings);
                 found = checker.StartSearch();
+            }
+            else
+            {
+                using (var writer = new FileWriter(outputPath))
+                {
+                    var checker = new AutomationIdChecker(targetDirectory, writer.WriteLine, filterStrings);
+                    found = checker.StartSearch();
+                }
             }
 
             Console.WriteLine($"Done!{Environment.NewLine}");
